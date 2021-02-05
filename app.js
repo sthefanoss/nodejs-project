@@ -21,12 +21,13 @@ const server = http.createServer((request, response) => {
         request.on('end', () => {
             let parsedBody = Buffer.concat(body).toString();
             let message = parsedBody.split('=')[1];
-            fileSystem.writeFileSync('message.txt', message);
+            fileSystem.writeFile('message.txt', message, exceptionResponse => {
+                console.log(exceptionResponse);
+                response.statusCode = 302;
+                response.setHeader('Location', '/');
+                response.end();
+            });
         });
-        
-        response.statusCode = 302;
-        response.setHeader('Location', '/');
-        response.end();
         return;
     }
 
