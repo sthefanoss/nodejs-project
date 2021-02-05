@@ -1,4 +1,5 @@
 const http = require('http');
+const fileSystem = require('fs');
 
 const server = http.createServer((request, response) => {
     if(request.url === '/') {
@@ -14,13 +15,19 @@ const server = http.createServer((request, response) => {
         return 
     }
     
-    console.log(request);
+    if(request.url === '/message' && request.method ==='POST') {
+        fileSystem.writeFileSync('message', 'DUMMY');
+        response.statusCode = 302;
+        response.setHeader('Location', '/');
+        response.end();
+        return;
+    }
+
     response.setHeader('Content-Type', 'text/html');
     response.write('<html>');
     response.write('    <head><title>Hello world!</title></head>');
     response.write('    <body><h1>Hello from my first Node.js server.</h1></body>');
     response.write('</html>');
-
     response.end();
 });
 
