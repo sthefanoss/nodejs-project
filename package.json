@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-project",
+  "version": "1.0.0",
+  "description": "This project fallows the Maximilian Schwarzmüller's NodeJS course.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sthefanoss/nodejs-project.git"
+  },
+  "keywords": [
+    "node",
+    "js",
+    "backend"
+  ],
+  "author": "Sthefano Schiavon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sthefanoss/nodejs-project/issues"
+  },
+  "homepage": "https://github.com/sthefanoss/nodejs-project#readme"
+}
