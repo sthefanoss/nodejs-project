@@ -8,7 +8,13 @@ server.use('/', (request, response, next) => {
 });
 
 server.use('/add-product', (request, response, next) => {
-    response.send('<h1>The add product page</h1>');
+    let responseHtml = String.raw`
+    <form action="/add-product" method="POST">
+         <input type="text" name="title">
+         <button type="submit">Submit</button>
+    </form>`;
+
+    response.send(responseHtml);
 });
 
 server.use('/', (request, response, next) => {
