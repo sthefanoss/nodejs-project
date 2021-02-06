@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/sthefanoss/nodejs-project/issues"
   },
-  "homepage": "https://github.com/sthefanoss/nodejs-project#readme"
+  "homepage": "https://github.com/sthefanoss/nodejs-project#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
 }
