@@ -7,7 +7,7 @@ server.use('/', (request, response, next) => {
     next();
 });
 
-server.use('/add-product', (request, response, next) => {
+server.get('/add-product', (request, response, next) => {
     let responseHtml = String.raw`
     <form action="/add-product" method="POST">
          <input type="text" name="title">
@@ -15,6 +15,11 @@ server.use('/add-product', (request, response, next) => {
     </form>`;
 
     response.send(responseHtml);
+});
+
+server.post('/add-product', (request, response, next) => {
+    console.log(request.body);
+    response.redirect('/add-product');
 });
 
 server.use('/', (request, response, next) => {
