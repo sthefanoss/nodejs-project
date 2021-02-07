@@ -6,11 +6,13 @@ module.exports.getAddProduct = (request, response, next) => {
 
 module.exports.postAddProduct = (request, response, next) => {
     let newProduct = new Product(request.body.title);
-    newProduct.save();
-
-    response.redirect('/auth/add-product');
+    newProduct.save(() => {
+        response.redirect('/auth/add-product');
+    });
 };
 
 module.exports.getProducts = (request, response, next) => {
-    response.render('shop', { products: Product.getAll(), pageTitle: 'Shop', path: '/' });
+    Product.getAll((products) => {
+        response.render('shop', { products, pageTitle: 'Shop', path: '/' });
+    });
 };
