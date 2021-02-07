@@ -1,11 +1,11 @@
-const path = require('path');
 const express = require('express');
+
+const path = require('../util/path');
 
 const router = express.Router();
 
 router.get('/add-product', (request, response, next) => {
-    console.log(__dirname,path.join(__dirname, '..' , 'views', 'auth', 'add-product.html'));
-    response.sendFile(path.join(__dirname, '..' , 'views', 'auth', 'add-product.html'));
+    response.sendFile(path('views', 'auth', 'add-product.html'));
 });
 
 router.post('/add-product', (request, response, next) => {
