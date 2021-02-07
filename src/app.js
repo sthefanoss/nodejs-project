@@ -12,7 +12,7 @@ const server = express();
 server.use(bodyParser.urlencoded({extended: false}));
 server.use(express.static(path('public')));
 
-server.use(authRouter);
+server.use('/auth', authRouter);
 server.use(shopRouter);
 server.use(errorRouter);
 
