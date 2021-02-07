@@ -14,4 +14,5 @@ router.post('/add-product', (request, response, next) => {
     response.redirect('/auth/add-product');
 });
 
-module.exports = router;
+module.exports.router = router;
+module.exports.products = products;

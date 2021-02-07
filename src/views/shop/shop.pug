@@ -18,4 +18,17 @@ html(lang="en")
                         a(href="/auth/add-product") Add Product
 
         main
-            h1 Hello from express
+            if products.length > 0
+                each product in products
+                    article.card.product-item
+                        header.card__header
+                            h1.product__title #{product.title}
+                        .card__image 
+                            img(src="https://img.olx.com.br/images/31/312154604155724.jpg", alt="Product imagem")
+                        .card__content
+                            h2.product__price R$5.00
+                            p.product__description Um pudim muito massa.
+                        .card__actions
+                            button.btn Add to Cart       
+            else
+                p Products list is empty. :(
