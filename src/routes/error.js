@@ -2,8 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
-router.get('/', (request, response, next) => {
-    response.send('<h1>Hello from express</h1>');
+router.use((request, response, next) => {
+    response.status(404).send('<h1>Page not found!</h1>');
 });
 
 module.exports = router;
