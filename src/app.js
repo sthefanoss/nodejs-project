@@ -8,6 +8,8 @@ const shopRouter = require('./routes/shop');
 const errorRouter = require('./routes/error');
 
 const server = express();
+server.set('view engine', 'pug');
+server.set('views', './src/views');
 
 server.use(bodyParser.urlencoded({extended: false}));
 server.use(express.static(path('public')));
