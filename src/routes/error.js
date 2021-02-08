@@ -1,9 +1,9 @@
 const express = require('express');
 
-const errorsController = require('../controllers/errors');
+const errorController = require('../controllers/error');
 
 const router = express.Router();
 
-router.use(errorsController.get404Page);
+router.use(errorController.get404Page);
 
 module.exports = router;
