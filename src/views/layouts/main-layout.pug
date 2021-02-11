@@ -15,6 +15,13 @@ html(lang="en")
                     li.main-header__item
                         a(href="/" class=(path==="/"?"active":"")) Shop
                     li.main-header__item
+                        a(href="/products" class=(path==="/products"?"active":"")) Products
+                    li.main-header__item
+                        a(href="/cart" class=(path==="/cart"?"active":"")) Cart
+                    li.main-header__item
+                        a(href="/orders" class=(path==="/orders"?"active":"")) Orders
+                    li.main-header__item
                         a(href="/auth/add-product" class=(path==="/auth/add-product"?"active":"")) Add Product
-
+                    li.main-header__item
+                        a(href="/auth/products" class=(path==="/auth/products"?"active":"")) Your Products
         block content
