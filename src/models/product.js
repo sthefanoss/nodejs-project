@@ -21,6 +21,12 @@ module.exports = class Product{
         });
     }
 
+    static findById(id, callback) {
+        Product.getAll(products => {
+            callback(products.find(element => element.id == id));
+        });
+    }
+
     constructor(title, imageUrl, description, price) {
         this.title = title;
         this.imageUrl = imageUrl;
