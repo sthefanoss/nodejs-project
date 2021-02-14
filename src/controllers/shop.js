@@ -56,3 +56,8 @@ module.exports.getCheckout = (request, response, next) => {
     pageTitle: 'Checkout'
   });
 };
+
+module.exports.postCart = (request, response, next) => {
+  console.log(request.body.productId);
+  response.redirect('/cart');
+};
