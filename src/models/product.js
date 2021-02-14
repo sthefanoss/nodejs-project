@@ -29,6 +29,7 @@ module.exports = class Product{
       }
 
     save(callback) {
+        this.id = Date.now();
         Product.getAll((products) => {
             products.push(this);
             
