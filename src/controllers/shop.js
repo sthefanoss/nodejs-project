@@ -38,9 +38,12 @@ module.exports.getIndex = (request, response, next) => {
 };
 
 module.exports.getCart = (request, response, next) => {
-  response.render('shop/cart', {
-    path: '/cart',
-    pageTitle: 'Your Cart'
+  Cart.get(cart => {
+    response.render('shop/cart', {
+      cart,
+      path: '/cart',
+      pageTitle: 'Your Cart'
+    });
   });
 };
 
