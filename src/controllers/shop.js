@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Cart = require('../models/cart');
 
 module.exports.getProducts = (request, response, next) => {
   Product.getAll(products => {
@@ -58,6 +59,12 @@ module.exports.getCheckout = (request, response, next) => {
 };
 
 module.exports.postCart = (request, response, next) => {
-  console.log(request.body.productId);
-  response.redirect('/cart');
+  Product.findById(request.body.productId, product => {
+    if(product == null) {
+      response.redirect('/cart');
+      return;
+    }
+
+    Cart.addProduct(product, () => response.redirect('/cart'));
+  });
 };
