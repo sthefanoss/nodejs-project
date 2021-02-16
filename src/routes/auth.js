@@ -9,6 +9,6 @@ router.get('/edit-product/:productId', authController.getEditProduct);
 router.get('/products', authController.getProducts);
 router.post('/add-product', authController.postAddProduct);
 router.post('/edit-product/:productId', authController.postEditProduct);
-
+router.post('/delete-product/:productId', authController.postDeleteProduct);
 
 module.exports = router;

@@ -19,6 +19,7 @@ block content
                         .card__actions
                             form(action=`/auth/edit-product/${product.id}`, method="get") 
                                 button.btn Edit
-                            button.btn Delete
+                            form(action=`/auth/delete-product/${product.id}`, method="post")     
+                                button.btn Delete
         else
             h1 No Products Found!

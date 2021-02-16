@@ -38,6 +38,15 @@ module.exports.postAddProduct = (request, response, next) => {
     product.save(() => response.redirect('/auth/products'));
 };
 
+module.exports.getProducts = (request, response, next) => {
+    Product.getAll((products) => {
+        response.render('auth/products', {
+            products,
+            pageTitle: 'Your Products',
+            path: '/auth/products' 
+        });
+    });
+};
 
 module.exports.postEditProduct = (request, response, next) => {
     let title = request.body.title;
@@ -49,13 +58,11 @@ module.exports.postEditProduct = (request, response, next) => {
     product.edit(() => response.redirect('/auth/products'));
 };
 
-module.exports.getProducts = (request, response, next) => {
-    Product.getAll((products) => {
-        response.render('auth/products', {
-            products,
-            pageTitle: 'Your Products',
-            path: '/auth/products' 
-        });
+module.exports.postDeleteProduct = (request, response, next) => {
+    Product.deleteById(request.params.productId, () => {
+        response.redirect('/auth/products');
     });
 };
+
+
   
