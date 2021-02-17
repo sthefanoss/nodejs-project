@@ -8,33 +8,48 @@ module.exports = class Cart{
     static get(callback) {
         fileSystem.readFile(_cartFile, (exception, fileData) => {
             if(exception != null) {
-                callback({products: [], totalPrice: 0});
+                callback(new Map());
                 return;
             }
 
             try {
-                let parsedData = JSON.parse(fileData);
-                callback(parsedData);
+                callback(new Map(JSON.parse(fileData)));
             } catch(e) {
-                callback({products: [], totalPrice: 0});
+                callback(new Map());
             }
         });
     }
 
-
     static addProduct(product, callback) {
         Cart.get(cart => {
-            cart.totalPrice += Number(product.price);
-            let productIndex = cart.products.findIndex(element => element.id == product.id);
-            
-            if(productIndex == -1) {
-                cart.products.push({id: product.id, quantity: 0});
-                productIndex = cart.products.length - 1;
-            }
-            
-            cart.products[productIndex].quantity++;
+            let previusQuantity = cart.get(product.id) ?? 0;
+            cart.set(product.id, previusQuantity + 1);
 
-            fileSystem.writeFile(_cartFile, JSON.stringify(cart), (exception) => {
+            fileSystem.writeFile(_cartFile, JSON.stringify(Array.from(cart.entries())),
+            (exception) => {
+                if(exception != null) 
+                    console.log(exception);
+                
+                callback();
+            });
+        }); 
+    }
+
+    static removeProductById(id, callback) {
+        Cart.get(cart => {
+            if(!cart.has(id)) {
+                callback();
+                return;
+            }
+
+            let previusQuantity = cart.get(id);
+            cart.set(id, previusQuantity - 1);
+            if(cart.get(id) == 0)
+                cart.delete(id);
+
+
+            fileSystem.writeFile(_cartFile, JSON.stringify(Array.from(cart.entries())),
+            (exception) => {
                 if(exception != null) 
                     console.log(exception);
                 
