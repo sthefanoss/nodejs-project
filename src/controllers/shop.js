@@ -40,8 +40,8 @@ module.exports.getIndex = (request, response, next) => {
 };
 
 module.exports.getCart = (request, response, next) => {
-  Product.getAll().then(products => {
-    Cart.get(cart => {
+  Product.getAll().then(products => 
+    Cart.get().then(cart => {
       let totalCount = 0;
       let productsInCart = products
         .filter(product => cart.has(product.id))
@@ -58,8 +58,8 @@ module.exports.getCart = (request, response, next) => {
           path: '/cart',
           pageTitle: 'Your Cart'
         });
-    });
-  });
+    })
+  );
 };
 
 module.exports.getOrders = (request, response, next) => {
@@ -77,18 +77,9 @@ module.exports.getCheckout = (request, response, next) => {
 };
 
 module.exports.postAddItemToCart = (request, response, next) => {
-  Product.findById(request.body.productId).then(product => {
-    if(product == null) {
-      response.redirect('/cart');
-      return;
-    }
-
-    Cart.addProduct(product, () => response.redirect('/cart'));
-  });
+  Cart.addProduct(request.body.productId).then(() => response.redirect('/cart'));
 };
 
 module.exports.postRemoveItemFromCart = (request, response, next) => {
-  Cart.removeProductById(Number(request.body.productId), () => {
-      response.redirect('/cart');
-  });
+  Cart.subProduct(request.body.productId).then(() => response.redirect('/cart'));
 };

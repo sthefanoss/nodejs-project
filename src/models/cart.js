@@ -1,60 +1,49 @@
-const fileSystem = require('fs');
-const path = require('../util/path');
-
-// needs a 'data' folder one level bellow this project
-const _cartFile = path('..','..','data','cart.json');
+const dataBase = require('../util/database');
 
 module.exports = class Cart{
-    static get(callback) {
-        fileSystem.readFile(_cartFile, (exception, fileData) => {
-            if(exception != null) {
-                callback(new Map());
-                return;
-            }
-
-            try {
-                callback(new Map(JSON.parse(fileData)));
-            } catch(e) {
-                callback(new Map());
-            }
+    static get() {
+        return dataBase.execute(
+            'SELECT * FROM cart_items',
+        ).then(([entries, rows]) => {
+           return new Map(entries.map(entry =>[Number(entry.product_id), Number(entry.quantity)]));
         });
     }
 
-    static addProduct(product, callback) {
-        Cart.get(cart => {
-            let previusQuantity = cart.get(product.id) ?? 0;
-            cart.set(product.id, previusQuantity + 1);
+    static addProduct(id) {
+        id = Number(id);
+        return Cart.get().then(entries => {
+            if(entries.has(id)) {
+                return dataBase.execute(
+                    'UPDATE cart_items SET quantity=? WHERE product_id=?',
+                    [entries.get(id)+1, id]
+                );
+            }
 
-            fileSystem.writeFile(_cartFile, JSON.stringify(Array.from(cart.entries())),
-            (exception) => {
-                if(exception != null) 
-                    console.log(exception);
-                
-                callback();
-            });
+            return dataBase.execute(
+                'INSERT INTO cart_items (product_id, quantity) VALUES (?, ?)',
+                [id, 1],
+            );
         }); 
     }
 
-    static removeProductById(id, callback) {
-        Cart.get(cart => {
-            if(!cart.has(id)) {
-                callback();
+    static subProduct(id) {
+        id = Number(id);
+        return Cart.get().then(entries => {
+            if(!entries.has(id)) {
                 return;
             }
+            
+            if(entries.get(id) > 1) {
+            return dataBase.execute(
+                    'UPDATE cart_items SET quantity=? WHERE product_id=?',
+                    [entries.get(id) - 1, id]
+                );
+            }
 
-            let previusQuantity = cart.get(id);
-            cart.set(id, previusQuantity - 1);
-            if(cart.get(id) == 0)
-                cart.delete(id);
-
-
-            fileSystem.writeFile(_cartFile, JSON.stringify(Array.from(cart.entries())),
-            (exception) => {
-                if(exception != null) 
-                    console.log(exception);
-                
-                callback();
-            });
+            return dataBase.execute(
+                'DELETE FROM cart_items where product_id=?',
+                [id],
+            );
         }); 
     }
 };
