@@ -9,37 +9,47 @@ module.exports = class Product{
         this.id = id;
     }
 
+    static fromDatabase(data) {
+        return new Product(
+            data.title,
+            data.image_url,
+            data.description,
+            data.price,
+            data.id
+        );
+    }
+
     static getAll() {
-        return dataBase.execute(
+        return dataBase.pool.execute(
             'SELECT * FROM products',
-        ).then(([products, rows]) => products);
+        ).then(([products, rows]) => products.map(Product.fromDatabase));
     }
 
     static findById(id) {
-        return dataBase.execute(
+        return dataBase.pool.execute(
             'SELECT * FROM products where products.id=?',
             [id],
-        ).then(([products, rows]) => products[0])
+        ).then(([products, rows]) => Product.fromDatabase(products[0]))
         .catch(() => null);
     }
 
     static deleteById(id) {
-        return dataBase.execute(
+        return dataBase.pool.execute(
             'DELETE FROM products where products.id=?',
             [id],
         );
     }
 
     save() {
-        return dataBase.execute(
-            'INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)',
+        return dataBase.pool.execute(
+            'INSERT INTO products (title, price, image_url, description) VALUES (?, ?, ?, ?)',
             [this.title, this.price, this.imageUrl, this.description],
         );
     }
 
     edit() {
-        return dataBase.execute(
-            'UPDATE products SET title=?, price=?, imageUrl=?, description=? WHERE id=?',
+        return dataBase.pool.execute(
+            'UPDATE products SET title=?, price=?, image_url=?, description=? WHERE id=?',
             [this.title, this.price, this.imageUrl, this.description, this.id],
         );
     }

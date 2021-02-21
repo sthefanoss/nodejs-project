@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const path = require('./util/path');
+const dataBase = require('./util/database');
 
 const authRouter = require('./routes/auth');
 const shopRouter = require('./routes/shop');
@@ -18,4 +19,5 @@ server.use('/auth', authRouter);
 server.use(shopRouter);
 server.use(errorRouter);
 
-server.listen(9000);
+dataBase.initialize().then(() => server.listen(9000));
+
