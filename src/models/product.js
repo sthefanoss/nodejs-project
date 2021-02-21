@@ -1,52 +1,6 @@
-const fileSystem = require('fs');
-const path = require('../util/path');
-
-// needs a 'data' folder one level bellow this project
-const _productsFile = path('..','..','data','products.json');
+const dataBase = require('../util/database');
 
 module.exports = class Product{
-    static getAll(callback) {
-        fileSystem.readFile(_productsFile, (exception, fileData) => {
-            if(exception != null) {
-                callback([]);
-                return;
-            }
-
-            try {
-                let parsedData = JSON.parse(fileData);
-                callback(parsedData);
-            } catch(e) {
-                callback([]);
-            }
-        });
-    }
-
-    static findById(id, callback) {
-        Product.getAll(products => {
-            callback(products.find(element => element.id == id));
-        });
-    }
-
-    static deleteById(id, callback) {
-        Product.getAll((products) => {
-            let index = products.findIndex(element => element.id == id);
-            console.log(index);
-            if(index == -1) {
-                callback();
-                return;
-            }
-
-            products.splice(index, 1);
-
-            fileSystem.writeFile(_productsFile, JSON.stringify(products), (exception) => {
-                if(exception != null) 
-                    console.log(exception);
-                
-                callback();
-            });
-        }); 
-    }
-
     constructor(title, imageUrl, description, price, id) {
         this.title = title;
         this.imageUrl = imageUrl;
@@ -55,37 +9,38 @@ module.exports = class Product{
         this.id = id;
     }
 
-    save(callback) {
-        this.id = Date.now();
-        Product.getAll((products) => {
-            products.push(this);
-            
-            fileSystem.writeFile(_productsFile, JSON.stringify(products), (exception) => {
-                if(exception != null) 
-                    console.log(exception);
-                
-                callback();
-            });
-        }); 
+    static getAll() {
+        return dataBase.execute(
+            'SELECT * FROM products',
+        ).then(([products, rows]) => products);
     }
 
+    static findById(id) {
+        return dataBase.execute(
+            'SELECT * FROM products where products.id=?',
+            [id],
+        ).then(([products, rows]) => products[0])
+        .catch(() => null);
+    }
 
-    edit(callback) {
-        Product.getAll((products) => {
-            let index = products.findIndex(element => element.id == this.id);
-            if(index == -1) {
-                callback();
-                return;
-            }
+    static deleteById(id) {
+        return dataBase.execute(
+            'DELETE FROM products where products.id=?',
+            [id],
+        );
+    }
 
-            products[index] = this;
+    save() {
+        return dataBase.execute(
+            'INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)',
+            [this.title, this.price, this.imageUrl, this.description],
+        );
+    }
 
-            fileSystem.writeFile(_productsFile, JSON.stringify(products), (exception) => {
-                if(exception != null) 
-                    console.log(exception);
-                
-                callback();
-            });
-        }); 
+    edit() {
+        return dataBase.execute(
+            'UPDATE products SET title=?, price=?, imageUrl=?, description=? WHERE id=?',
+            [this.title, this.price, this.imageUrl, this.description, this.id],
+        );
     }
 };
