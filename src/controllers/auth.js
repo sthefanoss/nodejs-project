@@ -11,7 +11,7 @@ module.exports.getAddProduct = (request, response, next) => {
 };
 
 module.exports.getEditProduct = (request, response, next) => {
-    Product.findById(request.params.productId, product => {
+    Product.findById(request.params.productId).then(product => {
         if(product == null) {
             response.redirect('/auth/add-product');
             return;
@@ -35,17 +35,19 @@ module.exports.postAddProduct = (request, response, next) => {
     let description = request.body.description;
     let product = new Product(title, imageUrl, description, price);
 
-    product.save(() => response.redirect('/auth/products'));
+    product.save().then(() => response.redirect('/auth/products'))
+    .catch(e => console.log(e));
 };
 
 module.exports.getProducts = (request, response, next) => {
-    Product.getAll((products) => {
+    Product.getAll().then(products => {
         response.render('auth/products', {
             products,
             pageTitle: 'Your Products',
             path: '/auth/products' 
         });
-    });
+    })
+    .catch(e => console.log(e));
 };
 
 module.exports.postEditProduct = (request, response, next) => {
@@ -55,13 +57,17 @@ module.exports.postEditProduct = (request, response, next) => {
     let description = request.body.description;
     let product = new Product(title, imageUrl, description, price, request.params.productId);
 
-    product.edit(() => response.redirect('/auth/products'));
+    product.edit().then(() => 
+        response.redirect('/auth/products')
+    )
+    .catch(e => console.log(e));
 };
 
 module.exports.postDeleteProduct = (request, response, next) => {
-    Product.deleteById(request.params.productId, () => {
-        response.redirect('/auth/products');
-    });
+    Product.deleteById(request.params.productId).then(() => 
+        response.redirect('/auth/products')
+    )
+    .catch(e => console.log(e));
 };
 
 
