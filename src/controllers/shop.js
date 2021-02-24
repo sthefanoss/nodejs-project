@@ -2,7 +2,7 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 module.exports.getProducts = (request, response, next) => {
-  Product.getAll().then(products => {
+  Product.findAll().then(products => {
     response.render('shop/product-list', {
       products,
       pageTitle: 'All Products',
@@ -13,7 +13,7 @@ module.exports.getProducts = (request, response, next) => {
 };
 
 module.exports.getProduct = (request, response, next) => {
-  Product.findById(request.params.id).then(product => {
+  Product.findByPk(request.params.id).then(product => {
     if(product == null){
       response.redirect('/products');
       return;
@@ -29,7 +29,7 @@ module.exports.getProduct = (request, response, next) => {
 };
 
 module.exports.getIndex = (request, response, next) => {
-  Product.getAll().then(products => {
+  Product.findAll().then(products => {
     response.render('shop/index', {
       products,
       pageTitle: 'Shop',
@@ -40,8 +40,8 @@ module.exports.getIndex = (request, response, next) => {
 };
 
 module.exports.getCart = (request, response, next) => {
-  Product.getAll().then(products => 
-    Cart.get().then(cart => {
+  Product.findAll().then(products => 
+    Cart.findAll().then(cart => {
       let totalCount = 0;
       let productsInCart = products
         .filter(product => cart.has(product.id))

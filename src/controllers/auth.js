@@ -11,7 +11,7 @@ module.exports.getAddProduct = (request, response, next) => {
 };
 
 module.exports.getEditProduct = (request, response, next) => {
-    Product.findById(request.params.productId).then(product => {
+    Product.findByPk(request.params.id).then(product => {
         if(product == null) {
             response.redirect('/auth/add-product');
             return;
@@ -28,19 +28,8 @@ module.exports.getEditProduct = (request, response, next) => {
     });
 };
 
-module.exports.postAddProduct = (request, response, next) => {
-    let title = request.body.title;
-    let imageUrl = request.body.imageUrl;
-    let price = request.body.price;
-    let description = request.body.description;
-    let product = new Product(title, imageUrl, description, price);
-
-    product.save().then(() => response.redirect('/auth/products'))
-    .catch(e => console.log(e));
-};
-
 module.exports.getProducts = (request, response, next) => {
-    Product.getAll().then(products => {
+    Product.findAll().then(products => {
         response.render('auth/products', {
             products,
             pageTitle: 'Your Products',
@@ -50,25 +39,35 @@ module.exports.getProducts = (request, response, next) => {
     .catch(e => console.log(e));
 };
 
-module.exports.postEditProduct = (request, response, next) => {
+module.exports.postAddProduct = (request, response, next) => {
     let title = request.body.title;
     let imageUrl = request.body.imageUrl;
     let price = request.body.price;
     let description = request.body.description;
-    let product = new Product(title, imageUrl, description, price, request.params.productId);
 
-    product.edit().then(() => 
-        response.redirect('/auth/products')
-    )
-    .catch(e => console.log(e));
+    Product.create({title, imageUrl, price, description})
+    .catch(e => console.log(e))
+    .finally(() => response.redirect('/auth/products'));
+};
+
+module.exports.postEditProduct = (request, response, next) => {
+    Product.findByPk(request.params.id).then(product => {
+        if(product == null)
+            return;
+           
+        product.title = request.body.title;
+        product.imageUrl = request.body.imageUrl;
+        product.price = request.body.price;
+        product.description = request.body.description;
+        return product.save();
+    })
+    .then()
+    .catch(e => console.log(e))
+    .finally(() => response.redirect('/auth/products'));
 };
 
 module.exports.postDeleteProduct = (request, response, next) => {
-    Product.deleteById(request.params.productId).then(() => 
-        response.redirect('/auth/products')
-    )
-    .catch(e => console.log(e));
+    Product.destroy({where:{id: request.params.id}})
+    .catch(e => console.log(e))
+    .finally(() => response.redirect('/auth/products'));
 };
-
-
-  

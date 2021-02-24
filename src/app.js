@@ -19,5 +19,6 @@ server.use('/auth', authRouter);
 server.use(shopRouter);
 server.use(errorRouter);
 
-dataBase.initialize().then(() => server.listen(9000));
+dataBase.sync().then(() => server.listen(9000))
+               .catch(e => console.log(e));
 
